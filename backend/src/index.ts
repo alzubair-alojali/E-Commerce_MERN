@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import userRoute from "./routes/userRoute.ts";
+import { seedInitialProducts } from "./services/productService.ts";
+import productRoute from "./routes/productRoute.ts";
 const app = express();
 const PORT = 3001;
 app.use(express.json());
@@ -14,13 +16,16 @@ mongoose
         console.error("Error connecting to MongoDB:", error);
     });
 
+seedInitialProducts();
+
+
 app.get("/", (req, res) => {
     res.send("Hello, E-commerce Backend!");
 });
 
 
 app.use('/user', userRoute);
-
+app.use('/product',productRoute)
 
 
 app.listen(PORT, () => {
