@@ -29,21 +29,21 @@ interface IAddItemToCart {
     quantity: number
 }
 
-export const addItemToCart = async({ userId, productId, quantity }: IAddItemToCart)=>{
+export const addItemToCart = async ({ userId, productId, quantity }: IAddItemToCart) => {
 
     const cart = await getActiveCartForUser({ userId });
     const existsInCart = cart.items.find((item) => item.product.toString() === productId);
-    if(existsInCart){
-        return {data:"Item already exists in cart",statusCode:400};
+    if (existsInCart) {
+        return { data: "Item already exists in cart", statusCode: 400 };
     }
 
     const product = await productModel.findById(productId);
 
-    if(!product){
-        return {data:"Product not found",statusCode:404};
+    if (!product) {
+        return { data: "Product not found", statusCode: 404 };
     }
-    if(product.stock < quantity){
-        return {data:"low stock for item",statusCode:400};
+    if (product.stock < quantity) {
+        return { data: "low stock for item", statusCode: 400 };
     }
 
     cart.items.push({
@@ -55,6 +55,48 @@ export const addItemToCart = async({ userId, productId, quantity }: IAddItemToCa
     cart.totalAmount += product.price * quantity;
 
     const updatedCart = await cart.save();
-    return {data:updatedCart,statusCode:200};
+    return { data: updatedCart, statusCode: 200 };
 
 }
+
+interface IUpdateItemInCart {
+    userId: string,
+    productId: string,
+    quantity: number
+}
+
+export const updateItemInCart = async ({ userId, productId, quantity }: IUpdateItemInCart) => {
+
+    const cart = await getActiveCartForUser({ userId });
+    const existsInCart = cart.items.find((item) => item.product.toString() === productId);
+
+    if (!existsInCart) {
+        return { data: "Item does not exist in cart", statusCode: 400 };
+    }
+
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+        return { data: "Product not found", statusCode: 404 };
+    }
+    if (product.stock < quantity) {
+        return { data: "low stock for item", statusCode: 400 };
+    }
+
+    const otherItemInCart = cart.items.filter((item) => item.product.toString() !== productId);
+
+    let total = otherItemInCart.reduce((sum, product) => {
+        sum+= product.quantity * product.unitPrice;
+        return sum;
+    }, 0);
+
+    existsInCart.quantity = quantity;
+    total += existsInCart.quantity * existsInCart.unitPrice;
+
+    cart.totalAmount = total;
+
+    const updatedCart = await cart.save();
+    return { data: updatedCart, statusCode: 200 };
+
+
+};
