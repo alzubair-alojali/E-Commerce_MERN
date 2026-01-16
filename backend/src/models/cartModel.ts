@@ -2,8 +2,8 @@ import mongoose, { Document, Schema, type ObjectId } from "mongoose";
 import type { IProduct } from "./productModel.ts";
 const cartStatusEnum = ["active", "completed"];
 
-export interface ICartItem extends Document {
-    product: IProduct[];
+export interface ICartItem {
+    product: IProduct;
     unitPrice: number;
     quantity: number;
 }
@@ -17,7 +17,7 @@ export interface ICart extends Document {
 
 
 const cartItemSchema: Schema = new Schema<ICartItem>({
-    product: [{ type: Schema.Types.ObjectId, ref: "Product", required: true }],
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     quantity: { type: Number, required: true, default: 1 },
     unitPrice: { type: Number, required: true },
 });
