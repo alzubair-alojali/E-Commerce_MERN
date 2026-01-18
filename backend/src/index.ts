@@ -5,7 +5,7 @@ import productRoute from "./routes/productRoute.ts";
 import cartRoute from "./routes/cartRoute.ts";
 import { seedInitialProducts } from "./services/productService.ts";
 const app = express();
-const PORT = 3001;
+const PORT = 4000;
 app.use(express.json());
 
 mongoose
@@ -23,7 +23,6 @@ seedInitialProducts();
 app.get("/", (req, res) => {
     res.send("Hello, E-commerce Backend!");
 });
-
 
 app.use('/user', userRoute);
 app.use('/product',productRoute)
