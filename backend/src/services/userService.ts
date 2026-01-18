@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.ts";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
+
 interface RegisterParams {
     firstName: string;
     lastName: string;
@@ -22,7 +23,7 @@ export const register = async ({ firstName, lastName, email, password }: Registe
     const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = new userModel({ firstName, lastName, email, password: hashedPassword });
     await newUser.save();
-    return { data: genrateJWT({email,firstName,lastName}), statusCode: 201 };
+    return { data: genrateJWT({ email, firstName, lastName }), statusCode: 201 };
 }
 
 
@@ -35,10 +36,10 @@ export const login = async ({ email, password }: LoginParams) => {
     if (!passwordMatch) {
         return { data: "Invalid email or password!", statusCode: 400 };
     }
-    return { data: genrateJWT({email,firstName: finduser.firstName,lastName: finduser.lastName}), statusCode: 200 };
+    return { data: genrateJWT({ email, firstName: finduser.firstName, lastName: finduser.lastName }), statusCode: 200 };
 }
 
 
 const genrateJWT = (data: any) => {
-    return JWT.sign(data, "qIGjDq6QUlk0PjeYDono6O7cJT28ZY9jiJBkAWOXXgI0p0wDguudFRTlkhInqDLS");
+    return JWT.sign(data, process.env.JWT_SECRET || '');
 }

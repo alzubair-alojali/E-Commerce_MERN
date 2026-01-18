@@ -21,5 +21,11 @@ export const seedInitialProducts = async () => {
     if (existingProducts.length === 0) {
         await productModel.insertMany(products);
     }
+
+    try{
+
+    }catch(error){
+        console.error("Error seeding initial products:", error);
+    }
 };
 
