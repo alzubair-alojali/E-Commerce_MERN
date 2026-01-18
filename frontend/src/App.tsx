@@ -1,5 +1,6 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 import {  HomePage } from "./pages/HomePage"
+import Navbar from "./components/Navbar"
 
 
 function App() {
@@ -7,9 +8,7 @@ function App() {
     <>
       
   <BrowserRouter>
-      <nav>
-        <Link to="/">الرئيسية</Link>
-      </nav>
+      <Navbar/>
     <Routes>
       <Route path="/" element={<HomePage/>} />
     </Routes>
