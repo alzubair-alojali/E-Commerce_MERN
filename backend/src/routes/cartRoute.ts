@@ -1,5 +1,5 @@
 import express from "express";
-import { addItemToCart, clearCart, deleteItemInCart, getActiveCartForUser, updateItemInCart } from "../services/cartService.ts";
+import { addItemToCart, checkout, clearCart, deleteItemInCart, getActiveCartForUser, updateItemInCart } from "../services/cartService.ts";
 import validateJWT from "../middlewares/validateJWT.ts";
 import type { IextendUserRequest } from "../types/extendedRequest.ts";
 
@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/", validateJWT, async (req: IextendUserRequest, res) => {
     const userId = req.user._id;
     const cart = await getActiveCartForUser({ userId });
-    return res.status(200).send("cart");
+    return res.status(200).send(cart);
 }
 );
 
@@ -40,6 +40,14 @@ router.delete('/items/:productId', validateJWT, async (req: IextendUserRequest, 
     const userId = req.user._id;
     const { productId } = req.params;
     const response = await deleteItemInCart({ userId, productId });
+    return res.status(response.statusCode).send(response.data);
+});
+
+
+router.post('/checkout', validateJWT, async (req: IextendUserRequest, res) => {
+    const userId = req.user._id;
+    const { address } = req.body;
+    const response = await checkout({ userId, address });
     return res.status(response.statusCode).send(response.data);
 });
 

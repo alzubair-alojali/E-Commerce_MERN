@@ -1,4 +1,5 @@
 import { cartModel, type ICartItem } from "../models/cartModel.ts";
+import { orederModel, type IorderItem } from "../models/orderModel.ts";
 import productModel from "../models/productModel.ts";
 
 
@@ -143,3 +144,45 @@ const calculateCartTotalItem = ({ cartItems }: { cartItems: ICartItem[] }) => {
 
     return total;
 }
+
+interface ICheckout {
+    userId: string,
+    address: string
+}
+
+export const checkout = async ({ userId, address }: ICheckout) => {
+
+    if(!address){
+        return {data:"please addd the address",statusCode:400}
+    }
+
+    const cart = await getActiveCartForUser({ userId });
+    const orderItems: IorderItem[] = [];
+
+    for (const item of cart.items) {
+        const product = await productModel.findById(item.product)
+        if (!product) {
+            return { data: "Product not found", statusCode: 400 };
+        }
+        const orderitem: IorderItem = {
+            productTitle: product.title,
+            productImage: product.image,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice
+        }
+        orderItems.push(orderitem);
+    }
+    const order=await orederModel.create({
+        orderItems,
+        userId,
+        total: cart.totalAmount,
+        address
+    });
+
+    await order.save();
+
+    cart.status="completed";
+    await cart.save();
+
+    return { data: order, statusCode: 200 };
+};
