@@ -8,10 +8,12 @@ import { seedInitialProducts } from "./services/productService.ts";
 import cors from "cors";
 
 const app = express();
-const PORT = 40000;
 app.use(express.json());
 dotenv.config();
 app.use(cors());
+
+
+const PORT = process.env.PORT;
 
 mongoose
     .connect(process.env.DATABASE_URL || 'mongodb://localhost:27017/ecommerce')

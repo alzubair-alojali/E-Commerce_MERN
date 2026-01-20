@@ -12,7 +12,7 @@ interface props{
     image:string;
     price:number;
 }
-export default function ProductCard({_id,title,image,price}:props) {
+export default function ProductCard({title,image,price}:props) {
 
     return (
         <Card>
