@@ -14,11 +14,13 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useAuth } from '../context/auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '@mui/material';
+import { ShoppingCart } from '@mui/icons-material';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
 function Navbar() {
-    const { username, isAuthenticated , logout } = useAuth();
+    const { username, isAuthenticated, logout } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -47,6 +49,10 @@ function Navbar() {
         logout();
         navigate('/');
         handleCloseUserMenu();
+    }
+
+    const handleCart = () => {
+        navigate('/cart');
     }
 
     return (
@@ -132,8 +138,13 @@ function Navbar() {
                             </Button>
                         ))}
                     </Box>
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{ flexGrow: 0,  display: 'flex', alignItems: 'center', gap: 2 }}>
                         {isAuthenticated ? <>
+                            <IconButton aria-label="cart" onClick={handleCart}>
+                                <Badge badgeContent={4} color="secondary">
+                                    <ShoppingCart sx={{color: 'white'}} />
+                                </Badge>
+                            </IconButton>
                             <Tooltip title="Open settings">
                                 <>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
