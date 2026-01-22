@@ -128,7 +128,6 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         }
 
     }
-
     const removeItemInCart = async (productId: string) => {
         try {
             const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
@@ -165,9 +164,34 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         }
 
     }
+    const clearCart = async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/cart`, {
+                method: 'delete',
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                setError('Failed to delete item from cart');
+                return;
+            }
+            const cart = await response.json();
+            if (!cart) {
+                setError('No cart data received');
+                return;
+            }
+            setCartItems([]);
+            setTotalAmount(0);
+
+        } catch (error) {
+            console.error('Error deleting item quantity:', error);
+        }
+
+    }
     console.log(error)
     return (
-        <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart, updateItemQuantity, removeItemInCart }}>
+        <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart, updateItemQuantity, removeItemInCart, clearCart }}>
             {children}
         </CartContext.Provider >
     )
