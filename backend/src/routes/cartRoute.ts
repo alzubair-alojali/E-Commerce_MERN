@@ -11,7 +11,7 @@ router.get("/", validateJWT, async (req: IextendUserRequest, res) => {
 
     try {
         const userId = req.user._id;
-        const cart = await getActiveCartForUser({ userId });
+        const cart = await getActiveCartForUser({ userId , populateProducts: true});
         return res.status(200).send(cart);
     } catch {
         return res.status(500).send("Internal Server Error");

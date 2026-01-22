@@ -16,6 +16,7 @@ import { useAuth } from '../context/auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
+import { useCart } from '../context/cart/CartContext';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
@@ -23,6 +24,7 @@ function Navbar() {
     const { username, isAuthenticated, logout } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const { cartItems } = useCart();
 
     const navigate = useNavigate();
 
@@ -59,20 +61,28 @@ function Navbar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                        }}
-                    >
-                        ByteBay
-                    </Typography>
+                    <Box onClick={() => { navigate('/') }} sx={{
+                        display:'flex',
+                        alignItems:'center',
+                        '&:hover': {
+                            cursor: 'pointer', // Optional: change cursor to pointer
+                        },
+                    }}>
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                            }}
+                        >
+                            ByteBay
+                        </Typography>
+                    </Box>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
@@ -138,11 +148,11 @@ function Navbar() {
                             </Button>
                         ))}
                     </Box>
-                    <Box sx={{ flexGrow: 0,  display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
                         {isAuthenticated ? <>
                             <IconButton aria-label="cart" onClick={handleCart}>
-                                <Badge badgeContent={4} color="secondary">
-                                    <ShoppingCart sx={{color: 'white'}} />
+                                <Badge badgeContent={cartItems.length} color="secondary">
+                                    <ShoppingCart sx={{ color: 'white' }} />
                                 </Badge>
                             </IconButton>
                             <Tooltip title="Open settings">
