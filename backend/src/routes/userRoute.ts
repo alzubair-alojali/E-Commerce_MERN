@@ -1,5 +1,7 @@
 import express from 'express';
-import { register, login } from '../services/userService.ts';
+import { register, login, getMyOrders } from '../services/userService.ts';
+import validateJWT from '../middlewares/validateJWT.ts';
+import type { IextendUserRequest } from '../types/extendedRequest.ts';
 
 
 const router = express.Router();
@@ -21,6 +23,16 @@ router.post('/login', async (request, response) => {
         response.status(statusCode).json(data);
     } catch {
         return response.status(500).json("Internal Server Error");
+    }
+});
+
+router.get("/my-orders", validateJWT, async (request: IextendUserRequest, response) => {
+    try {
+        const userId = request.user._id;
+        const { data, statusCode } = await getMyOrders(userId);
+        response.status(statusCode).send(data);
+    } catch {
+        return response.status(500).send("Internal Server Error");
     }
 });
 

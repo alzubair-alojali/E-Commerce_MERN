@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.ts";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
+import { orederModel } from "../models/orderModel.ts";
 
 interface RegisterParams {
     firstName: string;
@@ -39,6 +40,15 @@ export const login = async ({ email, password }: LoginParams) => {
     return { data: genrateJWT({ email, firstName: finduser.firstName, lastName: finduser.lastName }), statusCode: 200 };
 }
 
+
+export const getMyOrders = async (userId: string) => {
+    try {
+        const orders = await orederModel.find({ userId });
+        return { data: orders, statusCode: 200 };
+    } catch (error) {
+        return { data: "Could not fetch orders", statusCode: 500 };
+    }
+}
 
 const genrateJWT = (data: any) => {
     return JWT.sign(data, process.env.JWT_SECRET || '');
