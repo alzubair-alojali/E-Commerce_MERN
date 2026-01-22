@@ -1,29 +1,15 @@
-import { Container, Typography, Box, ButtonGroup, Button } from "@mui/material";
+import { Container, Typography, Box, Button, TextField } from "@mui/material";
 import { useCart } from "../context/cart/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
-const CartPage = () => {
-    const { cartItems, totalAmount, updateItemQuantity, removeItemInCart, clearCart } = useCart();
-    const navigate=useNavigate();
-
-    const handleUpdateItemQuantity = (productId: string, quantity: number) => {
-        if (quantity < 1) {
-            return;
-        }
-        updateItemQuantity(productId, quantity);
-    }
-    const handleRemoveItem = (productId: string) => {
-        removeItemInCart(productId);
-    }
-    const handleCheckout = () => {
-        navigate('/checkout');
-    }
+const CheckoutPage = () => {
+    const { cartItems, totalAmount } = useCart();
+    const addressRef = useRef<HTMLInputElement>(null);
 
     return (
         <Container sx={{ mt: 2 }}>
             <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h4">Cart Page</Typography>
-                <Button onClick={() => clearCart()} variant="outlined" sx={{ mt: 1, color: "#f44336", border: "none" }}>Clear Cart</Button>
+                <Typography variant="h4">Checkout Page</Typography>
             </Box>
             {cartItems.length === 0 ? <Typography sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', height: '60vh', color: "#757575", fontSize: "1.5rem" }}>Your cart is empty</Typography> :
                 <>
@@ -40,24 +26,24 @@ const CartPage = () => {
                                             <Typography>Total: ${(item.unitPrice * item.quantity).toFixed(2)}</Typography>
                                         </div>
                                     </Box>
-                                    <Button onClick={() => handleRemoveItem(item.productId)} variant="outlined" sx={{ mt: 1, color: "#f44336", border: "none" }}>Remove item</Button>
                                 </Box>
-                                <ButtonGroup>
-                                    <Button variant="contained" color="primary" onClick={() => handleUpdateItemQuantity(item.productId, item.quantity - 1)}>-</Button>
-                                    <Button variant="contained" color="primary" onClick={() => handleUpdateItemQuantity(item.productId, item.quantity + 1)}>+</Button>
-                                </ButtonGroup>
                             </Container>
                         ))}
                     </Box>
-
-                    <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h5">Total Amount: ${totalAmount.toFixed(2)}</Typography>
-                        <Button onClick={handleCheckout} variant="contained" color="primary">Checkout</Button>
+                    <Box sx={{ mt: 4, alignItems: 'center' }}>
+                        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Typography variant="h5">Total Amount: ${totalAmount.toFixed(2)}</Typography>
+                            <TextField label="Shipping Address" variant="outlined" fullWidth sx={{ maxWidth: '400px' }} name="address" inputRef={addressRef} />
+                        </Box>
+                        <Button onClick={() => { }} variant="contained" color="primary" fullWidth sx={{ p: 1 }}>Pay now</Button>
                     </Box>
                 </>
             }
         </Container>
     )
+
+
+
 }
 
-export default CartPage;
+export default CheckoutPage;

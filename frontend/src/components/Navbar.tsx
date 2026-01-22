@@ -18,8 +18,6 @@ import { Badge } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 import { useCart } from '../context/cart/CartContext';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-
 function Navbar() {
     const { username, isAuthenticated, logout } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -60,10 +58,10 @@ function Navbar() {
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
                     <Box onClick={() => { navigate('/') }} sx={{
-                        display:'flex',
-                        alignItems:'center',
+                        display: 'flex',
+                        alignItems: 'center',
                         '&:hover': {
                             cursor: 'pointer', // Optional: change cursor to pointer
                         },
@@ -83,7 +81,6 @@ function Navbar() {
                             ByteBay
                         </Typography>
                     </Box>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -111,11 +108,6 @@ function Navbar() {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                                </MenuItem>
-                            ))}
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -137,17 +129,6 @@ function Navbar() {
                     >
                         LOGO
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
                     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
                         {isAuthenticated ? <>
                             <IconButton aria-label="cart" onClick={handleCart}>
