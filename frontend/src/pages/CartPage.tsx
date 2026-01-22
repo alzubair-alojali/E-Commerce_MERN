@@ -2,7 +2,22 @@ import { Container, Typography, Box, ButtonGroup, Button } from "@mui/material";
 import { useCart } from "../context/cart/CartContext";
 
 const CartPage = () => {
-    const { cartItems, totalAmount } = useCart();
+    const { cartItems, totalAmount, updateItemQuantity, removeItemInCart } = useCart();
+
+
+
+    const handleUpdateItemQuantity = (productId: string, quantity: number) => {
+        if (quantity < 1) {
+            return;
+        }
+        updateItemQuantity(productId, quantity);
+    }
+
+    const handleRemoveItem = (productId: string) => {
+        removeItemInCart(productId);
+    }
+
+
 
     return (
         <Container sx={{ mt: 2 }}>
@@ -20,11 +35,11 @@ const CartPage = () => {
                                     <Typography>Total: ${(item.unitPrice * item.quantity).toFixed(2)}</Typography>
                                 </div>
                             </Box>
-                            <Button variant="outlined" sx={{ mt: 1, color:"#f44336", border:"none" }}>Remove item</Button>
+                            <Button onClick={()=>handleRemoveItem(item.productId)} variant="outlined" sx={{ mt: 1, color: "#f44336", border: "none" }}>Remove item</Button>
                         </Box>
                         <ButtonGroup>
-                            <Button variant="contained" color="primary">+</Button>
-                            <Button variant="contained" color="primary">-</Button>
+                            <Button variant="contained" color="primary" onClick={() => handleUpdateItemQuantity(item.productId, item.quantity - 1)}>-</Button>
+                            <Button variant="contained" color="primary" onClick={() => handleUpdateItemQuantity(item.productId, item.quantity + 1)}>+</Button>
                         </ButtonGroup>
                     </Container>
                 ))}

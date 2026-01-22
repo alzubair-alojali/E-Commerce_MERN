@@ -86,9 +86,88 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             console.error('Error adding item to cart:', error);
         }
     }
+    const updateItemQuantity = async (productId: string, quantity: number) => {
+
+        try {
+            const response = await fetch(`${BASE_URL}/cart/items`, {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    productId,
+                    quantity
+                }),
+            });
+            if (!response.ok) {
+                setError('Failed to update item quantity');
+                return;
+            }
+
+            const cart = await response.json();
+
+            if (!cart) {
+                setError('No cart data received');
+                return;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const cartItemMapping = cart.items.map(({ product, quantity }: { product: any, quantity: number }) => ({
+                productId: product._id,
+                title: product.title,
+                unitPrice: product.price,
+                image: product.image,
+                quantity: quantity,
+            }));
+            setCartItems([...cartItemMapping]);
+            setTotalAmount(cart.totalAmount);
+
+        } catch (error) {
+            console.error('Error updating item quantity:', error);
+        }
+
+    }
+
+    const removeItemInCart = async (productId: string) => {
+        try {
+            const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
+                method: 'delete',
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                setError('Failed to delete item from cart');
+                return;
+            }
+
+            const cart = await response.json();
+
+            if (!cart) {
+                setError('No cart data received');
+                return;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const cartItemMapping = cart.items.map(({ product, quantity }: { product: any, quantity: number }) => ({
+                productId: product._id,
+                title: product.title,
+                unitPrice: product.price,
+                image: product.image,
+                quantity: quantity,
+            }));
+            setCartItems([...cartItemMapping]);
+            setTotalAmount(cart.totalAmount);
+
+        } catch (error) {
+            console.error('Error deleting item quantity:', error);
+        }
+
+    }
     console.log(error)
     return (
-        <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart }}>
+        <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart, updateItemQuantity, removeItemInCart }}>
             {children}
         </CartContext.Provider >
     )
